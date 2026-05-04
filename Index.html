@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نموذج تقديم طلب</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Tahoma', system-ui, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #075e54 0%, #128C7E 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .form-container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            padding: 25px;
+            box-shadow: 0 20px 35px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #075e54;
+            font-size: 24px;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .sub {
+            text-align: center;
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        .field-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 14px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 14px;
+            font-size: 14px;
+            transition: 0.2s;
+            background: #fafafa;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #25D366;
+            background: white;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        button {
+            width: 100%;
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 40px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        button:hover {
+            background: #128C7E;
+            transform: scale(1.01);
+        }
+        .note {
+            font-size: 11px;
+            color: #888;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <h1>📄 تقديم طلب جديد</h1>
+    <div class="sub">املأ البيانات التالية بدقة</div>
+
+    <div class="field-group">
+        <label>📌 رقم البوليصة</label>
+        <input type="text" id="policyNumber" placeholder="أدخل رقم البوليصة">
+    </div>
+
+    <div class="field-group">
+        <label>📌 رقم الإقرار</label>
+        <input type="text" id="ackNumber" placeholder="أدخل رقم الإقرار">
+    </div>
+
+    <div class="field-group">
+        <label>🏢 الرقم الضريبي لصاحب الشأن</label>
+        <input type="text" id="taxOwner" placeholder="الرقم الضريبي لصاحب الشأن">
+    </div>
+
+    <div class="field-group">
+        <label>🏢 الرقم الضريبي لمقدم البيان</label>
+        <input type="text" id="taxDeclarant" placeholder="الرقم الضريبي لمقدم البيان">
+    </div>
+
+    <div class="field-group">
+        <label>👤 اسم مقدم البيان</label>
+        <input type="text" id="declarantName" placeholder="الاسم كاملاً">
+    </div>
+
+    <div class="field-group">
+        <label>🆔 الرقم القومي لمقدم البيان</label>
+        <input type="text" id="nationalId" placeholder="الرقم القومي (14 رقم)">
+    </div>
+
+    <button onclick="sendToWhatsApp()">
+        📱 إرسال الطلب عبر واتساب
+    </button>
+    <div class="note">بعد الضغط، ستنتقل إلى واتساب لتأكيد الإرسال</div>
+</div>
+
+<script>
+    // رقم واتسابك (تم إدخاله)
+    const YOUR_PHONE = "201282183309";
+
+    function sendToWhatsApp() {
+        // جلب البيانات من الحقول
+        const policyNumber = document.getElementById('policyNumber').value.trim();
+        const ackNumber = document.getElementById('ackNumber').value.trim();
+        const taxOwner = document.getElementById('taxOwner').value.trim();
+        const taxDeclarant = document.getElementById('taxDeclarant').value.trim();
+        const declarantName = document.getElementById('declarantName').value.trim();
+        const nationalId = document.getElementById('nationalId').value.trim();
+
+        // التحقق من أن الحقول الأساسية مش فارغة (اختياري، تقدر تشيله لو عايز)
+        if (!policyNumber || !ackNumber || !declarantName) {
+            alert("يرجى ملء الحقول الأساسية على الأقل: رقم البوليصة، رقم الإقرار، واسم مقدم البيان.");
+            return;
+        }
+
+        // بناء التاريخ والوقت الحالي
+        const now = new Date();
+        const dateTime = now.toLocaleString('ar-EG', { hour12: false });
+
+        // توليد رقم مرجعي عشوائي
+        const randomRef = "ORD-" + Math.floor(1000 + Math.random() * 9000);
+
+        // بناء الرسالة النهائية المرسلة لك
+        const message = `📅 التاريخ: ${dateTime}
+🔖 رقم الطلب المرجعي: ${randomRef}
+
+📋 بيانات الطلب الجديد:
+
+📌 رقم البوليصة: ${policyNumber}
+📌 رقم الإقرار: ${ackNumber}
+🏢 الرقم الضريبي لصاحب الشأن: ${taxOwner || "——"}
+🏢 الرقم الضريبي لمقدم البيان: ${taxDeclarant || "——"}
+👤 اسم مقدم البيان: ${declarantName}
+🆔 الرقم القومي لمقدم البيان: ${nationalId || "——"}
+
+✅ الرجاء متابعة الطلب.`;
+
+        // ترميز النص وتحويله لرابط واتساب
+        const encodedMsg = encodeURIComponent(message);
+        const waLink = `https://wa.me/${YOUR_PHONE}?text=${encodedMsg}`;
+
+        // فتح واتساب في نفس الصفحة أو نافذة جديدة
+        window.open(waLink, '_blank');
+    }
+</script>
+</body>
+</html>
